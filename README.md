@@ -25,7 +25,7 @@ npx prisma generate
 npm run seeder
 ```
 
-### Admin account after seeding
+### Admin default credentials after seeding
 
 | Body Parameter | Type     | value             |
 | :------------- | :------- | :---------------- |
