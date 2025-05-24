@@ -25,6 +25,13 @@ npx prisma generate
 npm run seeder
 ```
 
+### Admin account after seeding
+
+| Body Parameter | Type     | value             |
+| :------------- | :------- | :---------------- |
+| `email`        | `string` | "admin@admin.com" |
+| `password`     | `string` | "Ab#123456"       |
+
 ## API Reference
 
 #### Base URL
