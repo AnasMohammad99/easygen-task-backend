@@ -6,7 +6,7 @@ import { DatabaseModule } from './database/database.module';
 import { JwtAuthGuard } from './jwtAuthGuard';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { ProductModule } from './product/product.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { ProductModule } from './product/product.module';
     DatabaseModule,
     AuthModule,
     UserModule,
-    ProductModule,
+    ApplicationModule,
   ],
   controllers: [AppController],
   providers: [JwtAuthGuard, AppService],

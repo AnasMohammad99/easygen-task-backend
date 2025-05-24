@@ -1,372 +1,373 @@
-## setup the project
+## Setup the project
 
-### nest js
-
-```bash
-`npm install`
-`cp env-example .env`
-Change `<postgres-username>` to `you psotgresql server username`
-
-Change `<postgres-password>` to `you psotgresql server password`
-```
-
-### prisma
+### NestJS
 
 ```bash
-`npx prisma migrate dev`
-
-`npx prisma generate`
+npm install
+cp env-example .env
 ```
 
-### seeder
+Edit your `.env` file:
+
+- Change `<postgres-username>` to your PostgreSQL server username
+- Change `<postgres-password>` to your PostgreSQL server password
+
+### Prisma
 
 ```bash
-`npm run seeder`
+npx prisma migrate dev
+npx prisma generate
 ```
 
-## Reference
+### Seeder
 
-#### root uri
+```bash
+npm run seeder
+```
+
+## API Reference
+
+#### Base URL
+
+```
+http://localhost:5000
+```
+
+#### Swagger Documentation
+
+```
+http://localhost:5000/api
+```
+
+## Authentication Endpoints
+
+### Register new user
 
 ```http
- http://localhost:5000
+POST /auth/client/register
 ```
 
-#### swagger documentation uri
+| Body Parameter | Type     | Description                                                              |
+| :------------- | :------- | :----------------------------------------------------------------------- |
+| `username`     | `string` | **Required** **Unique** Username for the account                         |
+| `email`        | `string` | **Required** **Unique** Valid email address                              |
+| `password`     | `string` | **Required** Must contain letter, number, special character, min 8 chars |
+| `role`         | `string` | **Required** User role (defaults to "USER")                              |
 
-```http
- http://localhost:5000/api
+#### Response
+
+```json
+{
+  "id": 1,
+  "username": "john_doe",
+  "email": "user@example.com",
+  "role": "USER",
+  "access_token": "jwt_token",
+  "message": "user has been created successfully"
+}
 ```
-
-## auth routes
-
-#### Register new user
-
-```http
-  POST /auth/client/register
-```
-
-| Body Parameter | Type     | Description                                                                |
-| :------------- | :------- | :------------------------------------------------------------------------- |
-| `username`     | `string` | **Required** **Unique**                                                    |
-| `password`     | `string` | **Required** must contain character, special character, more than 8 leters |
-| `role`         | `string` | **Required** choose between "MODERATOR" and "USER"                         |
-
-### Response
-
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `username`     | `string` |
-| `role`         | `string` |
 
 ---
 
-#### login user
+### Login user
 
 ```http
-  POST /auth/login
+POST /auth/login
 ```
 
-| Body Parameter | Type     | Description  |
-| :------------- | :------- | :----------- |
-| `username`     | `string` | **Required** |
-| `password`     | `string` | **Required** |
+| Body Parameter | Type     | Description                |
+| :------------- | :------- | :------------------------- |
+| `email`        | `string` | **Required** User's email  |
+| `password`     | `string` | **Required** User password |
 
-### Response
+#### Response
 
-| Body Parameter | Type     | Description |
-| :------------- | :------- | :---------- |
-| `message`      | `string` |
-| `access_token` | `string` |
+```json
+{
+  "message": "logged in successfully",
+  "id": 1,
+  "username": "john_doe",
+  "email": "user@example.com",
+  "role": "USER",
+  "access_token": "jwt_token"
+}
+```
 
 ---
 
-#### logout user
+### Logout user
 
 ```http
-  POST /auth/logout
+POST /auth/logout
 ```
 
 | Header Parameter | Type     | Description                         |
 | :--------------- | :------- | :---------------------------------- |
-| `authentication` | `string` | **Required** Bearer ${access_token} |
+| `Authorization`  | `string` | **Required** Bearer ${access_token} |
 
-### Response
+#### Response
 
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-
----
-
-#### verify user email
-
-```http
-  POST /auth/verifyEmail
+```json
+{
+  "message": "Logged out successfully"
+}
 ```
 
-| Header Parameter | Type     | Description  |
-| :--------------- | :------- | :----------- |
-| `email`          | `string` | **Required** |
-
 ---
 
-### Response
-
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-
-#### reset user password
+### Verify Email
 
 ```http
-  POST /user/resetPassword/{token}
+POST /auth/verifyEmail
 ```
 
-| Header Parameter | Type     | Description  |
-| :--------------- | :------- | :----------- |
-| `email`          | `string` | **Required** |
-| `password`       | `string` | **Required** |
+| Body Parameter | Type     | Description               |
+| :------------- | :------- | :------------------------ |
+| `email`        | `string` | **Required** User's email |
+
+#### Response
+
+```json
+{
+  "message": "Verification code sent successfully"
+}
+```
 
 ---
 
-### Response
-
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `email`        | `string` |
-| `username`     | `string` |
-
----
-
-## User routes
-
-#### add new user
+### Reset Password
 
 ```http
-  POST /user/
+POST /auth/verifyResetPassword/:token
 ```
 
-| Body Parameter | Type     | Description                                        |
-| :------------- | :------- | :------------------------------------------------- |
-| `username`     | `string` | **Required** **Unique**                            |
-| `password`     | `string` | **Required**                                       |
-| `role`         | `string` | **Required** choose between "MODERATOR" and "USER" |
+| Parameter  | Type     | Description                       |
+| :--------- | :------- | :-------------------------------- |
+| `token`    | `string` | **Required** Password reset token |
+| `email`    | `string` | **Required** User's email         |
+| `password` | `string` | **Required** New password         |
 
-### Response
+#### Response
 
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `username`     | `string` |
-| `role`         | `string` |
+```json
+{
+  "message": "Password reset successfully"
+}
+```
 
 ---
 
-#### update user
+## Application Endpoints
+
+All Application endpoints require authentication with JWT token in the Authorization header.
+
+### Get My Applications
 
 ```http
-  PATCH /user/{id}
+GET /application/myapplications
 ```
 
-| Body Parameter | Type     | Description                                        |
-| :------------- | :------- | :------------------------------------------------- |
-| `username`     | `string` | **Optional**                                       |
-| `password`     | `string` | **Optional**                                       |
-| `role`         | `string` | **Optional** choose between "MODERATOR" and "USER" |
+Retrieves all applications for the logged-in user.
 
-### Response
+#### Response
 
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `username`     | `string` |
-| `role`         | `string` |
+```json
+[
+  {
+    "id": 1,
+    "job_name": "Software Engineer",
+    "job_description": "Full-stack developer position",
+    "status": "PENDING",
+    "user_id": 1,
+    "created_at": "2024-03-20T10:00:00Z",
+    "updated_at": "2024-03-20T10:00:00Z"
+  }
+]
+```
 
 ---
 
-#### get user
+### Get Application List (Admin only)
 
 ```http
-  GET /user/{id}
+GET /application/list
 ```
 
-### Response
+| Query Parameter      | Type     | Description                           |
+| :------------------- | :------- | :------------------------------------ |
+| `limit`              | `string` | **Optional** Number of items per page |
+| `page`               | `string` | **Optional** Page number              |
+| `application_status` | `string` | **Optional** Filter by status         |
 
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `username`     | `string` |
-| `role`         | `string` |
+#### Response
+
+```json
+[
+  {
+    "id": 1,
+    "job_name": "Software Engineer",
+    "job_description": "Full-stack developer position",
+    "status": "PENDING",
+    "user_id": 1,
+    "created_at": "2024-03-20T10:00:00Z",
+    "updated_at": "2024-03-20T10:00:00Z"
+  }
+]
+```
 
 ---
 
-#### delete user
+### Get Application by ID
 
 ```http
-  DELETE /user/{id}
+GET /application/:application_id
 ```
 
-### Response
+| URL Parameter    | Type     | Description                 |
+| :--------------- | :------- | :-------------------------- |
+| `application_id` | `string` | **Required** Application ID |
 
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `username`     | `string` |
-| `email`        | `string` |
-| `role`         | `string` |
+#### Response
+
+```json
+{
+  "data": {
+    "id": 1,
+    "job_name": "Software Engineer",
+    "job_description": "Full-stack developer position",
+    "status": "PENDING",
+    "user_id": 1,
+    "created_at": "2024-03-20T10:00:00Z",
+    "updated_at": "2024-03-20T10:00:00Z"
+  }
+}
+```
 
 ---
 
-#### add new supplier
+### Add Application
 
 ```http
-  POST /supplier/
+POST /application
 ```
 
-| Body Parameter          | Type        | Description                                             |
-| :---------------------- | :---------- | :------------------------------------------------------ |
-| `email`                 | `string`    | **Required** **Unique** must be valid email m@gmail.com |
-| `username`              | `string`    | **Required**                                            |
-| `address`               | `string`    | **Required**                                            |
-| `account_number`        | `Integer`   | **Required**                                            |
-| `other_account_numbers` | `Integer[]` | **Optional**                                            |
-| `phone_number`          | `string`    | **Required**                                            |
+| Body Parameter    | Type     | Description                  |
+| :---------------- | :------- | :--------------------------- |
+| `job_name`        | `string` | **Required** Name of the job |
+| `job_description` | `string` | **Required** Job description |
 
-### Response
+#### Response
 
-| Body Parameter          | Type        |
-| :---------------------- | :---------- |
-| `message`               | `string`    |
-| `email`                 | `string`    |
-| `username`              | `string`    |
-| `address`               | `string`    |
-| `account_number`        | `Integer`   |
-| `other_account_numbers` | `Integer[]` |
-| `phone_number`          | `string`    |
-| `supplier_type`         | `string`    |
+```json
+{
+  "id": 1,
+  "job_name": "Software Engineer",
+  "job_description": "Full-stack developer position",
+  "status": "PENDING",
+  "user_id": 1,
+  "created_at": "2024-03-20T10:00:00Z",
+  "updated_at": "2024-03-20T10:00:00Z"
+}
+```
 
 ---
 
-## Product routes
-
-#### add new product
+### Update Application
 
 ```http
-  POST /product/
+PATCH /application/:application_id
 ```
 
-| Body Parameter        | Type     | Description  |
-| :-------------------- | :------- | :----------- |
-| `product_name`        | `string` | **Required** |
-| `product_description` | `string` | **Required** |
-| `price`               | `string` | **Required** |
-| `stock_quantity`      | `number` | **Required** |
+| Parameter         | Type     | Description                     |
+| :---------------- | :------- | :------------------------------ |
+| `application_id`  | `string` | **Required** Application ID     |
+| `job_name`        | `string` | **Optional** Name of the job    |
+| `job_description` | `string` | **Optional** Job description    |
+| `status`          | `string` | **Optional** Application status |
 
-### Response
+#### Response
 
-| Body Parameter        | Type     |
-| :-------------------- | :------- |
-| `message`             | `string` |
-| `product_name`        | `string` |
-| `product_description` | `string` |
-| `price`               | `number` |
-| `stock_quantity`      | `number` |
+```json
+{
+  "id": 1,
+  "job_name": "Updated Job Name",
+  "job_description": "Updated description",
+  "status": "PENDING",
+  "user_id": 1,
+  "created_at": "2024-03-20T10:00:00Z",
+  "updated_at": "2024-03-20T10:00:00Z"
+}
+```
 
 ---
 
-#### update product
+### Delete Application by ID
 
 ```http
-  PATCH /product/{id}
+DELETE /application/:application_id
 ```
 
-| Body Parameter        | Type     | Description  |
-| :-------------------- | :------- | :----------- |
-| `product_name`        | `string` | **Optional** |
-| `product_description` | `string` | **Optional** |
-| `price`               | `number` | **Optional** |
-| `stock_quantity`      | `number` | **Optional** |
+| URL Parameter    | Type     | Description                 |
+| :--------------- | :------- | :-------------------------- |
+| `application_id` | `string` | **Required** Application ID |
 
-### Response
+#### Response
 
-| Body Parameter        | Type     |
-| :-------------------- | :------- |
-| `message`             | `string` |
-| `product_name`        | `string` |
-| `product_description` | `string` |
-| `price`               | `number` |
-| `stock_quantity`      | `number` |
+```json
+{
+  "message": "application deleted",
+  "data": {
+    "id": 1,
+    "job_name": "Software Engineer",
+    "job_description": "Full-stack developer position",
+    "status": "PENDING",
+    "user_id": 1,
+    "created_at": "2024-03-20T10:00:00Z",
+    "updated_at": "2024-03-20T10:00:00Z"
+  }
+}
+```
 
 ---
 
-#### get product
+### Delete All Applications (Admin only)
 
 ```http
-  GET /product/{id}
+DELETE /application
 ```
 
-### Response
+#### Response
 
-| Body Parameter        | Type     |
-| :-------------------- | :------- |
-| `message`             | `string` |
-| `product_name`        | `string` |
-| `product_description` | `string` |
-| `price`               | `number` |
-| `stock_quantity`      | `number` |
-
----
-
-#### get all products
-
-```http
-  GET /product/
+```json
+{
+  "message": "All applications deleted successfully"
+}
 ```
 
-### Response
+## Application Status Values
 
-| Body Parameter        | Type     |
-| :-------------------- | :------- |
-| `message`             | `string` |
-| `product_name`        | `string` |
-| `product_description` | `string` |
-| `price`               | `number` |
-| `stock_quantity`      | `number` |
+Applications can have the following status values:
 
----
+- `PENDING`: Application is waiting for review
+- `REJECTED`: Application has been rejected
+- `CANCELLED`: Application has been cancelled by the user
+- `ACCEPTED`: Application has been accepted
 
-#### delete product
+## Error Responses
 
-```http
-  DELETE /product/{id}
+All endpoints may return the following error responses:
+
+- `400 Bad Request`: Invalid input data or request parameters
+- `401 Unauthorized`: Missing or invalid authentication token
+- `403 Forbidden`: User doesn't have permission to perform the action
+- `404 Not Found`: Requested resource not found
+- `500 Internal Server Error`: Server-side error
+
+Error responses follow this format:
+
+```json
+{
+  "message": "Error description",
+  "statusCode": 400
+}
 ```
-
-### Response
-
-| Body Parameter        | Type     |
-| :-------------------- | :------- |
-| `message`             | `string` |
-| `product_name`        | `string` |
-| `product_description` | `string` |
-| `price`               | `number` |
-| `stock_quantity`      | `number` |
-
----
-
-#### delete all products
-
-```http
-  DELETE /product/
-```
-
-### Response
-
-| Body Parameter | Type     |
-| :------------- | :------- |
-| `message`      | `string` |
-| `count`        | `string` |
-
----

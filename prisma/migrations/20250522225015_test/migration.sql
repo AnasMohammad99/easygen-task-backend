@@ -1,5 +1,8 @@
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('USER', 'MODERATOR');
+CREATE TYPE "Role" AS ENUM ('USER', 'ADMIN');
+
+-- CreateEnum
+CREATE TYPE "Status" AS ENUM ('PENDING', 'REJECTED', 'CANCELLED', 'ACCEPTED');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -23,15 +26,16 @@ CREATE TABLE "Token" (
 );
 
 -- CreateTable
-CREATE TABLE "Product" (
+CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
-    "product_name" TEXT NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
-    "product_description" TEXT NOT NULL,
-    "stock_quantity" INTEGER NOT NULL,
-    "picture" JSONB,
+    "user_id" INTEGER NOT NULL,
+    "job_name" TEXT NOT NULL,
+    "status" "Status" NOT NULL DEFAULT 'PENDING',
+    "job_description" TEXT NOT NULL,
+    "applied_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Product_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -42,3 +46,6 @@ CREATE UNIQUE INDEX "Token_user_id_key" ON "Token"("user_id");
 
 -- AddForeignKey
 ALTER TABLE "Token" ADD CONSTRAINT "Token_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Application" ADD CONSTRAINT "Application_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

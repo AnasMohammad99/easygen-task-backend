@@ -1,0 +1,19 @@
+# Node modules and build output
+node_modules
+dist
+build
+
+# Environment and system files
+.env
+.env.*
+*.log
+*.tsbuildinfo
+
+# IDE/editor settings
+.vscode
+.idea
+.DS_Store
+
+# Docker-related
+Dockerfile
+docker-compose.yml

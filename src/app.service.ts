@@ -7,18 +7,8 @@ import * as dotenv from 'dotenv';
 
 @Injectable()
 export class AppService {
-  constructor(private database: DatabaseService) { }
+  constructor(private database: DatabaseService) {}
   getHello(): string {
     return 'Hello World!';
-  }
-  async deleteAllData() {
-    try {
-      await this.database.product.deleteMany({});
-      await this.database.token.deleteMany({});
-      await this.database.user.deleteMany({});
-      return { message: 'all data deleted' };
-    } catch (error) {
-      handleError(error);
-    }
   }
 }

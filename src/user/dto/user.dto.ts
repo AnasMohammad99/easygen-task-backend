@@ -20,7 +20,7 @@ const passwordRequirement: PasswordValidationRequirement = {
 };
 
 export enum Role {
-  OPERATOR,
+  ADMIN,
   USER,
 }
 export class CreateUserDto {
@@ -32,7 +32,7 @@ export class CreateUserDto {
   email: string;
   @IsNotEmpty()
   @IsString()
-  @MinLength(6)
+  @MinLength(8)
   @MaxLength(20)
   @Validate(PasswordValidation, [passwordRequirement])
   password: string;
@@ -44,6 +44,15 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   username: string;
+  @IsEmail()
+  @IsOptional()
+  email: string;
+  @IsString()
+  @IsOptional()
+  @MinLength(8)
+  @MaxLength(20)
+  @Validate(PasswordValidation, [passwordRequirement])
+  password: string;
   @IsOptional()
   @IsEnum(Role)
   role: any;
