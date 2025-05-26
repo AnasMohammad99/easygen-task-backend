@@ -18,7 +18,7 @@ Edit your `.env` file:
 npx prisma migrate dev
 npx prisma generate
 ```
-###if you want to choose mongodb
+### if you want to choose mongodb
 ```bash
 npx prisma push db
 npx prisma generate
